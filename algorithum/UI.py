@@ -91,18 +91,18 @@ class Window:
                     if i == 0:
                         self.lic_Tk1 = ImageTk.PhotoImage(Image.fromarray(lic_pred[0][:, :, ::-1]))
                         self.can_lic1.create_image(5, 5, image=self.lic_Tk1, anchor='nw')
-                        self.can_pred1.create_text(35, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28))
+                        self.can_pred1.create_text(35, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28), fill='red')
                     elif i == 1:
                         self.lic_Tk2 = ImageTk.PhotoImage(Image.fromarray(lic_pred[0][:, :, ::-1]))
                         self.can_lic2.create_image(5, 5, image=self.lic_Tk2, anchor='nw')
-                        self.can_pred2.create_text(40, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28))
+                        self.can_pred2.create_text(40, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28), fill='red')
                     elif i == 2:
                         self.lic_Tk3 = ImageTk.PhotoImage(Image.fromarray(lic_pred[0][:, :, ::-1]))
                         self.can_lic3.create_image(5, 5, image=self.lic_Tk3, anchor='nw')
-                        self.can_pred3.create_text(40, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28))
+                        self.can_pred3.create_text(40, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28), fill='red')
 
             else:  # Lic_pred为空说明未能识别
-                self.can_pred1.create_text(47, 15, text='未能识别', anchor='nw', font=('黑体', 27))
+                self.can_pred1.create_text(47, 15, text='未能识别', anchor='nw', font=('黑体', 27), fill='red')
 
     def clear(self):
         self.can_src.delete('all')
