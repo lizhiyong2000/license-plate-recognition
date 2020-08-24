@@ -6,9 +6,9 @@ from tkinter import *
 from tkinter.filedialog import askopenfilename
 from PIL import Image, ImageTk
 from tensorflow import keras
-from core import locate_and_correct
-from Unet import unet_predict
-from CNN import cnn_predict
+from algorithm.core import locate_and_correct
+from algorithm.Unet import unet_predict
+from algorithm.CNN import cnn_predict
 
 
 class Window:

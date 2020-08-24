@@ -46,7 +46,7 @@ def main(argv):
         proxy = args.proxy_socks5
 
     max_number = 1000
-    batch_size = 100
+    batch_size = 60
     current_batch = 0
     current_number = 0
     uncompleted = 0

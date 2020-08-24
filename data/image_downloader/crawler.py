@@ -54,7 +54,7 @@ def baidu_image_url_from_webpage(driver):
     return image_urls
 
 
-def baidu_get_image_url_using_api(keywords, batch_no=0, batch_size=100, face_only=False,
+def baidu_get_image_url_using_api(keywords, batch_no=0, batch_size=60, face_only=False,
                                   proxy=None, proxy_type=None):
     def decode_url(url):
         in_table = '0123456789abcdefghijklmnopqrstuvw'
@@ -71,16 +71,16 @@ def baidu_get_image_url_using_api(keywords, batch_no=0, batch_size=100, face_onl
     query_url = base_url + keywords_str
     query_url += "&face={}".format(1 if face_only else 0)
 
-    init_url = query_url + "&pn=0&rn=30"
+    # init_url = query_url + "&pn=0&rn=30"
 
     proxies = None
     if proxy and proxy_type:
         proxies = {"http": "{}://{}".format(proxy_type, proxy),
                    "https": "{}://{}".format(proxy_type, proxy)}
 
-    res = requests.get(init_url, proxies=proxies)
-    init_json = json.loads(res.text.replace(r"\'", ""), encoding='utf-8', strict=False)
-    total_num = init_json['listNum']
+    # res = requests.get(init_url, proxies=proxies)
+    # init_json = json.loads(res.text.replace(r"\'", ""), encoding='utf-8', strict=False)
+    # total_num = init_json['listNum']
 
     # target_num = min(max_number, total_num)
     # crawl_num = min(target_num * 2, total_num)
@@ -95,6 +95,8 @@ def baidu_get_image_url_using_api(keywords, batch_no=0, batch_size=100, face_onl
     image_urls = list()
     url = query_url + \
         "&pn={}&rn={}".format(batch_no * batch_size, batch_size)
+
+    my_print("Query URL: " + url, quiet=False)
     try_time = 0
     while True:
         try:
@@ -126,7 +128,7 @@ def baidu_get_image_url_using_api(keywords, batch_no=0, batch_size=100, face_onl
     # return crawled_urls[:min(len(crawled_urls), target_num)]
 
 
-def crawl_image_urls(keywords, engine="baidu", batch_no=0, batch_size=100,
+def crawl_image_urls(keywords, engine="baidu", batch_no=0, batch_size=60,
                      face_only=False, safe_mode=False, proxy=None, 
                      proxy_type="http", quiet=False, browser="chrome"):
     """
@@ -155,7 +157,7 @@ def crawl_image_urls(keywords, engine="baidu", batch_no=0, batch_size=100,
 
     query_url = baidu_gen_query_url(keywords, face_only, safe_mode)
 
-    my_print("Query URL:  " + query_url, quiet)
+    # my_print("Query URL:  " + query_url, quiet)
 
     # browser = str.lower(browser)
     # if "chrome" in browser:
