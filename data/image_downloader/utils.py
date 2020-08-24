@@ -26,7 +26,7 @@ class AppConfig(object):
         self.proxy_type = None
         self.proxy = None
 
-        self.num_threads = 50
+        self.num_threads = 10
 
         self.output_dir = "./output"
 

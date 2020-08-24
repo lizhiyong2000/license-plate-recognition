@@ -1,31 +1,29 @@
 # -*- coding: utf-8 -*-
-# author: Yabin Zheng
-# Email: sczhengyabin@hotmail.com
-
-from __future__ import print_function
+# author: Li Zhiyong
+# Email: lizhiyong2000@gmail.com
 
 import argparse
-
-import crawler
-import downloader
 import sys
+from concurrent import futures
+
+from data.image_downloader import crawler, downloader
 
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Image Downloader")
-    parser.add_argument("keywords", type=str,
+    parser.add_argument("--keywords", type=str, default="车牌",
                         help='Keywords to search. ("in quotes")')
-    parser.add_argument("--engine", "-e", type=str, default="Google",
+    parser.add_argument("--engine", "-e", type=str, default="Baidu",
                         help="Image search engine.", choices=["Google", "Bing", "Baidu"])
     parser.add_argument("--driver", "-d", type=str, default="chrome_headless",
                         help="Image search engine.", choices=["chrome_headless", "chrome", "phantomjs"])
     parser.add_argument("--max-number", "-n", type=int, default=100,
                         help="Max number of images download for the keywords.")
-    parser.add_argument("--num-threads", "-j", type=int, default=50,
+    parser.add_argument("--num-threads", "-j", type=int, default=10,
                         help="Number of threads to concurrently download images.")
     parser.add_argument("--timeout", "-t", type=int, default=20,
                         help="Seconds to timeout when download an image.")
-    parser.add_argument("--output", "-o", type=str, default="./download_images",
+    parser.add_argument("--output", "-o", type=str, default="../../test_pic/train_images",
                         help="Output directory to save downloaded images.")
     parser.add_argument("--safe-mode", "-S", action="store_true", default=False,
                         help="Turn on safe search mode. (Only effective in Google)")
@@ -47,15 +45,32 @@ def main(argv):
         proxy_type = "socks5"
         proxy = args.proxy_socks5
 
-    crawled_urls = crawler.crawl_image_urls(args.keywords,
-                                            engine=args.engine, max_number=args.max_number,
-                                            face_only=args.face_only, safe_mode=args.safe_mode,
-                                            proxy_type=proxy_type, proxy=proxy,
-                                            browser=args.driver)
-    downloader.download_images(image_urls=crawled_urls, dst_dir=args.output,
-                               concurrency=args.num_threads, timeout=args.timeout,
-                               proxy_type=proxy_type, proxy=proxy,
-                               file_prefix=args.engine)
+    max_number = 1000
+    batch_size = 100
+    current_batch = 0
+    current_number = 0
+    uncompleted = 0
+
+    with futures.ThreadPoolExecutor(max_workers=5) as executor:
+        crawled_urls = list()
+        future_list = list()
+        while current_number + uncompleted < max_number:
+            future_list.append(executor.submit(crawler.crawl_image_urls, args.keywords, batch_no=current_batch, batch_size=batch_size))
+            current_batch += 1
+            uncompleted += batch_size
+
+        for future in futures.as_completed(future_list):
+            if future.exception() is None:
+                crawled_urls += future.result()
+            else:
+                print(future.exception())
+
+        count = downloader.download_images(image_urls=crawled_urls, dst_dir=args.output,
+                                   concurrency=args.num_threads, timeout=args.timeout,
+                                   proxy_type=proxy_type, proxy=proxy,
+                                   file_prefix=args.engine)
+
+        print("{0} downloaded".format(count))
 
     print("Finished.")
 
