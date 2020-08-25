@@ -9,20 +9,19 @@ from tensorflow.keras import layers, losses, models
 def unet_train():
     height = 512
     width = 512
-    path = 'D:/desktop/unet_datasets/'
+    path = '../images/unet_datasets/'
     input_name = os.listdir(path + 'train_image')
     n = len(input_name)
     print(n)
     X_train, y_train = [], []
     for i in range(n):
         print("正在读取第%d张图片" % i)
-        img = cv2.imread(path + 'train_image/%d.png' % i)
-        label = cv2.imread(path + 'train_label/%d.png' % i)
+        img = cv2.imread(os.path.join(path, 'train', 'image', '%d.png' % i))
+        label = cv2.imread(os.path.join(path, 'train', 'label', '%d.png' % i))
         X_train.append(img)
         y_train.append(label)
     X_train = np.array(X_train)
     y_train = np.array(y_train)
-
 
     def Conv2d_BN(x, nb_filter, kernel_size, strides=(1, 1), padding='same'):
         x = layers.Conv2D(nb_filter, kernel_size, strides=strides, padding=padding)(x)

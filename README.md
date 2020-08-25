@@ -16,3 +16,7 @@
 ![](https://github.com/duanshengliu/End-to-end-for-chinese-plate-recognition/blob/master/test_pic/5.png)
 ![](https://github.com/duanshengliu/End-to-end-for-chinese-plate-recognition/blob/master/test_pic/6.png)
 ![](https://github.com/duanshengliu/End-to-end-for-chinese-plate-recognition/blob/master/test_pic/7.png)
+
+
+
++ [从CCPD数据集中生成标注文件](https://blog.csdn.net/lswdecsdn/article/details/106676840)

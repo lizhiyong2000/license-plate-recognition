@@ -3,6 +3,7 @@
 # Email: lizhiyong2000@gmail.com
 
 import argparse
+import os
 import sys
 from concurrent import futures
 
@@ -11,7 +12,7 @@ from data.image_downloader import crawler, downloader
 
 def main(argv):
     parser = argparse.ArgumentParser(description="Image Downloader")
-    parser.add_argument("--keywords", type=str, default="车牌",
+    parser.add_argument("--keywords", type=str, default="货车黄牌",
                         help='Keywords to search. ("in quotes")')
     parser.add_argument("--engine", "-e", type=str, default="Baidu",
                         help="Image search engine.", choices=["Google", "Bing", "Baidu"])
@@ -23,7 +24,7 @@ def main(argv):
                         help="Number of threads to concurrently download images.")
     parser.add_argument("--timeout", "-t", type=int, default=20,
                         help="Seconds to timeout when download an image.")
-    parser.add_argument("--output", "-o", type=str, default="../../test_pic/train_images",
+    parser.add_argument("--output", "-o", type=str, default="../../images/download",
                         help="Output directory to save downloaded images.")
     parser.add_argument("--safe-mode", "-S", action="store_true", default=False,
                         help="Turn on safe search mode. (Only effective in Google)")
@@ -65,7 +66,10 @@ def main(argv):
             else:
                 print(future.exception())
 
-        count = downloader.download_images(image_urls=crawled_urls, dst_dir=args.output,
+
+        output = os.path.join(args.output, args.keywords)
+
+        count = downloader.download_images(image_urls=crawled_urls, dst_dir=output,
                                    concurrency=args.num_threads, timeout=args.timeout,
                                    proxy_type=proxy_type, proxy=proxy,
                                    file_prefix=args.engine)
