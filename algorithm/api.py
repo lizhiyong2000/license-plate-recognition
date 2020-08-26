@@ -9,8 +9,8 @@ from algorithm.core import locate_and_correct
 
 class LprAlgorithm:
     def __init__(self):
-        self.unet = keras.models.load_model('unet.h5')
-        self.cnn = keras.models.load_model('cnn.h5')
+        self.unet = keras.models.load_model('unet_0.h5')
+        self.cnn = keras.models.load_model('cnn_0.h5')
         print('正在启动中,请稍等...')
         cnn_predict(self.cnn, [np.zeros((80, 240, 3))])
         print("已启动,开始识别吧！")

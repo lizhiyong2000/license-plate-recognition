@@ -9,17 +9,39 @@ from tensorflow.keras import layers, losses, models
 def unet_train():
     height = 512
     width = 512
-    path = '../images/unet_datasets/'
-    input_name = os.listdir(path + 'train_image')
-    n = len(input_name)
-    print(n)
+    path = '../images/unet_dataset/train'
+    input_dirs = [name for name in os.listdir(path) if os.path.isdir(os.path.join(path, name))]
     X_train, y_train = [], []
-    for i in range(n):
-        print("正在读取第%d张图片" % i)
-        img = cv2.imread(os.path.join(path, 'train', 'image', '%d.png' % i))
-        label = cv2.imread(os.path.join(path, 'train', 'label', '%d.png' % i))
-        X_train.append(img)
-        y_train.append(label)
+    index = 0
+    included_extensions = ['png']
+    for j in range(len(input_dirs)):
+        image_input_dir = os.path.join(path, input_dirs[j], 'image')
+        lable_input_dir = os.path.join(path, input_dirs[j], 'label')
+
+        # n = len(input_dir)
+        # print(input_dirs)
+        input_files = [fn for fn in os.listdir(image_input_dir)
+                      if any(fn.endswith(ext) for ext in included_extensions)]
+        #
+        # input_files = os.listdir(image_input_dir)
+        input_files.sort()
+        n = len(input_files)
+
+        for i in range(n):
+            print("正在读取 %s 第%d张图片" % (input_dirs[j], i+1))
+
+            image_path = os.path.join(image_input_dir, input_files[i])
+            label_path = os.path.join(lable_input_dir, input_files[i])
+
+            if(os.path.exists(image_path) and os.path.exists(label_path)):
+                img = cv2.imread(image_path)
+                label = cv2.imread(label_path)
+                X_train.append(img)
+                y_train.append(label)
+
+            else:
+                print("label not exist:" + label_path)
+
     X_train = np.array(X_train)
     y_train = np.array(y_train)
 
