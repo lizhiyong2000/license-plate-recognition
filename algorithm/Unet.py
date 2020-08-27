@@ -132,4 +132,7 @@ def unet_predict(unet, img_src_path):
     img_mask[:, :, 2] = img_mask[:, :, 1] = img_mask[:, :, 0]  # 三个通道保持相同
     img_mask = img_mask.astype(np.uint8)  # 将img_mask类型转为int型
 
+    # cv2.imshow('img_mask',img_mask)
+    # cv2.waitKey(0)
+
     return img_src, img_mask

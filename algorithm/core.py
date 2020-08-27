@@ -14,12 +14,14 @@ def locate_and_correct(img_src, img_mask):
     """
     # cv2.imshow('img_mask',img_mask)
     # cv2.waitKey(0)
-    # ret,thresh = cv2.threshold(img_mask[:,:,0],0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU) #二值化
+    ret,thresh = cv2.threshold(img_mask[:,:,0],0,255,cv2.THRESH_BINARY+cv2.THRESH_OTSU) #二值化
     # cv2.imshow('thresh',thresh)
+    img_mask = thresh
+
     # cv2.waitKey(0)
-    contours, hierarchy = cv2.findContours(img_mask[:, :, 0], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, hierarchy = cv2.findContours(img_mask[:, :], cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     if not len(contours):  # contours1长度为0说明未检测到车牌
-        # print("未检测到车牌")
+        print("未检测到车牌")
         return [], []
     else:
         Lic_img = []
@@ -29,7 +31,7 @@ def locate_and_correct(img_src, img_mask):
             img_cut_mask = img_mask[y:y + h, x:x + w]  # 将标签车牌区域截取出来
             # cv2.imshow('img_cut_mask',img_cut_mask)
             # cv2.waitKey(0)
-            # print('w,h,均值,宽高比',w,h,np.mean(img_cut_mask),w/h)
+            print('w,h,均值,宽高比',w,h,np.mean(img_cut_mask),w/h)
             # contours中除了车牌区域可能会有宽或高都是1或者2这样的小噪点，
             # 而待选车牌区域的均值应较高，且宽和高不会非常小，因此通过以下条件进行筛选
             if np.mean(img_cut_mask) >= 75 and w > 15 and h > 15:

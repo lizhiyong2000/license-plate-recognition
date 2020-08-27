@@ -49,10 +49,10 @@ class Window:
         self.button2.place(x=780, y=wh - 30)
         self.button3 = Button(self.win, text='清空所有', width=10, height=1, command=self.clear)  # 清空所有按钮
         self.button3.place(x=880, y=wh - 30)
-        self.unet = keras.models.load_model('unet_0.h5')
+        self.unet = keras.models.load_model('unet.h5')
         self.cnn = keras.models.load_model('cnn_0.h5')
         print('正在启动中,请稍等...')
-        cnn_predict(self.cnn, [np.zeros((80, 240, 3))])
+        cnn_predict(self.cnn, np.zeros((80, 240, 3)))
         print("已启动,开始识别吧！")
 
 
@@ -80,29 +80,31 @@ class Window:
                 img_src, img_mask = unet_predict(self.unet, self.img_src_path)
                 img_src_copy, Lic_img = locate_and_correct(img_src, img_mask)  # 利用core.py中的locate_and_correct函数进行车牌定位和矫正
 
-            Lic_pred = cnn_predict(self.cnn, Lic_img)  # 利用cnn进行车牌的识别预测,Lic_pred中存的是元祖(车牌图片,识别结果)
-            if Lic_pred:
-                img = Image.fromarray(img_src_copy[:, :, ::-1])  # img_src_copy[:, :, ::-1]将BGR转为RGB
-                self.img_Tk = ImageTk.PhotoImage(img)
-                self.can_src.delete('all')  # 显示前,先清空画板
-                self.can_src.create_image(258, 258, image=self.img_Tk,
-                                          anchor='center')  # img_src_copy上绘制出了定位的车牌轮廓,将其显示在画板上
-                for i, lic_pred in enumerate(Lic_pred):
-                    if i == 0:
-                        self.lic_Tk1 = ImageTk.PhotoImage(Image.fromarray(lic_pred[0][:, :, ::-1]))
-                        self.can_lic1.create_image(5, 5, image=self.lic_Tk1, anchor='nw')
-                        self.can_pred1.create_text(35, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28), fill='red')
-                    elif i == 1:
-                        self.lic_Tk2 = ImageTk.PhotoImage(Image.fromarray(lic_pred[0][:, :, ::-1]))
-                        self.can_lic2.create_image(5, 5, image=self.lic_Tk2, anchor='nw')
-                        self.can_pred2.create_text(40, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28), fill='red')
-                    elif i == 2:
-                        self.lic_Tk3 = ImageTk.PhotoImage(Image.fromarray(lic_pred[0][:, :, ::-1]))
-                        self.can_lic3.create_image(5, 5, image=self.lic_Tk3, anchor='nw')
-                        self.can_pred3.create_text(40, 15, text=lic_pred[1], anchor='nw', font=('黑体', 28), fill='red')
+            img = Image.fromarray(img_src_copy[:, :, ::-1])  # img_src_copy[:, :, ::-1]将BGR转为RGB
+            self.img_Tk = ImageTk.PhotoImage(img)
+            self.can_src.delete('all')  # 显示前,先清空画板
+            self.can_src.create_image(258, 258, image=self.img_Tk,
+                                      anchor='center')  # img_src_copy上绘制出了定位的车牌轮廓,将其显示在画板上
 
-            else:  # Lic_pred为空说明未能识别
-                self.can_pred1.create_text(47, 15, text='未能识别', anchor='nw', font=('黑体', 27), fill='red')
+            for i, lic in enumerate(Lic_img):
+
+                lic_result = cnn_predict(self.cnn, lic)  # 利用cnn进行车牌的识别预测,Lic_pred中存的是元祖(车牌图片,识别结果)
+                if not lic_result:
+                    lic_result = '未能识别'
+
+                    # for i, lic_pred in enumerate(Lic_pred):
+                if i == 0:
+                    self.lic_Tk1 = ImageTk.PhotoImage(Image.fromarray(lic[:, :, ::-1]))
+                    self.can_lic1.create_image(5, 5, image=self.lic_Tk1, anchor='nw')
+                    self.can_pred1.create_text(35, 15, text=lic_result, anchor='nw', font=('黑体', 28), fill='red')
+                elif i == 1:
+                    self.lic_Tk2 = ImageTk.PhotoImage(Image.fromarray(lic[:, :, ::-1]))
+                    self.can_lic2.create_image(5, 5, image=self.lic_Tk2, anchor='nw')
+                    self.can_pred2.create_text(40, 15, text=lic_result, anchor='nw', font=('黑体', 28), fill='red')
+                elif i == 2:
+                    self.lic_Tk3 = ImageTk.PhotoImage(Image.fromarray(lic[:, :, ::-1]))
+                    self.can_lic3.create_image(5, 5, image=self.lic_Tk3, anchor='nw')
+                    self.can_pred3.create_text(40, 15, text=lic_result, anchor='nw', font=('黑体', 28), fill='red')
 
     def clear(self):
         self.can_src.delete('all')
