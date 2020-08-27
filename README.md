@@ -17,6 +17,6 @@
 ![](https://github.com/duanshengliu/End-to-end-for-chinese-plate-recognition/blob/master/test_pic/6.png)
 ![](https://github.com/duanshengliu/End-to-end-for-chinese-plate-recognition/blob/master/test_pic/7.png)
 
-
-
++ [基于u-net，cv2以及cnn的中文车牌定位，矫正和端到端识别软件](https://blog.csdn.net/qq_32194791/article/details/106748685)
 + [从CCPD数据集中生成标注文件](https://blog.csdn.net/lswdecsdn/article/details/106676840)
++ [使用Keras实现CRNN（CNN + RNN）进行OCR车牌识别](https://java.ctolib.com/qjadud1994-CRNN-Keras.html)
