@@ -106,7 +106,7 @@ def resize_image_replace(path):
 
         # os.remove(origin_filepath)
 
-if __name__ == '__main__'
+if __name__ == '__main__':
     pass
     # lpr = LprAlgorithm()
     # img_src = "../images/download/新能源车牌/Baidu_0001.jpeg"
